@@ -3,18 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Yahoo History Exporter</title>
+  <title>Fantasy History Exporter</title>
   <link rel="stylesheet" href="sidepanel.css">
 </head>
 <body>
   <main>
     <header>
-      <h1>Yahoo History Exporter</h1>
-      <p class="muted">Download your Yahoo Fantasy Football league's history as a JSON file. Runs entirely in your browser using your own Yahoo login.</p>
+      <h1>Fantasy History Exporter</h1>
+      <p class="muted">Download your Yahoo, ESPN, or Sleeper fantasy football league's history as a JSON file. Runs entirely in your browser.</p>
     </header>
 
     <section id="status" class="card" aria-live="polite">
-      <p id="statusText">Checking for a Yahoo league tab…</p>
+      <label class="field">
+        <span class="muted">League link (Sleeper or ESPN), or open your league in a tab</span>
+        <input id="leagueInput" type="text" placeholder="https://sleeper.com/leagues/…" autocomplete="off" spellcheck="false">
+      </label>
+      <p id="statusText">Checking for a league tab…</p>
       <button id="scanButton" type="button" disabled>Find seasons</button>
     </section>
 
@@ -47,7 +51,7 @@
     </section>
 
     <footer class="muted">
-      Unofficial. Not affiliated with or endorsed by Yahoo. Your data stays on your computer; the only requests this extension makes are to Yahoo Fantasy. Fetching a long history can take several minutes.
+      Unofficial. Not affiliated with or endorsed by Yahoo, ESPN, or Sleeper. Your data stays on your computer; the only requests this extension makes are to those sites' fantasy football services. Fetching a long Yahoo history can take several minutes.
     </footer>
   </main>
   <script type="module" src="sidepanel.js"></script>

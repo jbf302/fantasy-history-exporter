@@ -66,3 +66,14 @@ ul { list-style: none; margin: 0 0 12px; padding: 0; }
 progress { width: 100%; height: 10px; margin-bottom: 8px; }
 footer { padding: 0 2px 8px; font-size: 12px; }
 .error-text { color: var(--error); }
+.field { display: grid; gap: 4px; margin-bottom: 10px; }
+.field input {
+  font: inherit;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+}
+.field input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }

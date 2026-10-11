@@ -1,39 +1,13 @@
-import {
-  discoverYahooLeagueChain,
-  expandSeasonYearHints,
-  fetchYahooSeasonBundle,
-  isYahooRetryableFetchError,
-  leagueDraftResultsUrl,
-  leagueKeyMatchesLeagueId,
-  leagueScoreboardUrl,
-  leagueSettingsUrl,
-  NFL_GAME_KEYS_BY_SEASON,
-  parseLeagueDraftResults,
-  parseLeagueDraftSettings,
-  parseLeagueScoreboard,
-  parseTeamRosterWeek,
-  resolveYahooLeagueKey,
-  teamKeyFromParts,
-  teamRosterWeekStatsUrl,
-  teamRosterWeekUrl,
-  weekNumbersFromLeagueMetadata,
-  yahooLeagueIdFromUrl,
-  yahooLeagueSlugFromUrl,
-  yahooSeasonFromUrl
-} from "../lib/yahoo-api.js";
-import { normalizeYahooImport } from "../lib/yahoo-normalizer.js";
-import {
-  createYahooFetcher,
-  describeYahooError,
-  fetchFranchiseSeasonPageHtml,
-  findYahooTab,
-  friendlyYahooError,
-  getPageHints
-} from "../lib/yahoo-session.js";
+import { espnProvider } from "./providers/espn.js";
+import { sleeperProvider } from "./providers/sleeper.js";
+import { yahooProvider } from "./providers/yahoo.js";
+
+const PROVIDERS = [yahooProvider, espnProvider, sleeperProvider];
 
 const $ = (id) => document.getElementById(id);
 const el = {
   statusText: $("statusText"),
+  leagueInput: $("leagueInput"),
   scanButton: $("scanButton"),
   picker: $("picker"),
   pickerHint: $("pickerHint"),
@@ -54,10 +28,20 @@ const el = {
 
 class CancelledError extends Error {}
 
-// Recent failed Yahoo requests, shown in the log when a scan or download fails.
+const state = {
+  target: null, // { provider, leagueId, tab?, ... } from the active tab or the pasted link
+  provider: null, // provider of the current scan
+  scan: null, // { leagueId, chain, fetchJson, years }
+  archive: null,
+  bundles: new Map(), // season -> fetched bundle; survives failures so a retry resumes
+  cancelRequested: false,
+  busy: false
+};
+
+// Recent failed requests, shown in the log when a scan or download fails.
 const trace = [];
 function recordFailure(error, requestUrl) {
-  const line = describeYahooError(error, requestUrl);
+  const line = state.provider?.describeError?.(error, requestUrl);
   if (!line) return;
   trace.push(line);
   if (trace.length > 12) trace.shift();
@@ -68,15 +52,6 @@ function logTrace() {
   for (const line of trace) logLine(line, "error");
   trace.length = 0;
 }
-
-const state = {
-  tab: null,
-  scan: null, // { leagueId, chain, fetchJson }
-  archive: null,
-  bundles: new Map(), // season -> fetched bundle; survives failures so a retry resumes
-  cancelRequested: false,
-  busy: false
-};
 
 function setStatus(text, isError = false) {
   el.statusText.textContent = text;
@@ -101,7 +76,8 @@ function setProgress(done, total, text) {
 
 function setBusy(busy) {
   state.busy = busy;
-  el.scanButton.disabled = busy || !state.tab;
+  el.scanButton.disabled = busy || !state.target;
+  el.leagueInput.disabled = busy;
   el.downloadButton.disabled = busy;
   el.progress.hidden = !busy;
 }
@@ -110,43 +86,67 @@ function throwIfCancelled() {
   if (state.cancelRequested) throw new CancelledError("Cancelled.");
 }
 
-// --- Tab detection ---------------------------------------------------------
+function friendlyError(error) {
+  if (error instanceof CancelledError) return "Cancelled.";
+  return state.provider?.friendlyError(error) || error?.message || "Something went wrong.";
+}
 
-async function refreshTab() {
+// --- League detection ------------------------------------------------------
+
+const NO_LEAGUE_MESSAGE =
+  "Open your league on Yahoo, ESPN, or Sleeper in a tab, or paste a Sleeper or ESPN league link above.";
+
+function targetFromInput() {
+  const text = el.leagueInput.value.trim();
+  if (!text) return null;
+  for (const provider of PROVIDERS) {
+    const target = provider.targetFromInput(text);
+    if (target) return { provider, ...target };
+  }
+  return { error: "That doesn't look like a Sleeper or ESPN league link. (Yahoo needs an open league tab.)" };
+}
+
+async function targetFromTabs() {
+  const [active] = await chrome.tabs.query({ active: true, currentWindow: true });
+  let provider = PROVIDERS.find((candidate) => candidate.matchesTab(active));
+  let tab = provider ? active : null;
+  if (!tab) {
+    for (const candidate of PROVIDERS) {
+      const [match] = await chrome.tabs.query({ url: candidate.tabUrlPattern });
+      if (match) {
+        provider = candidate;
+        tab = match;
+        break;
+      }
+    }
+  }
+  if (!tab) return null;
+  const target = await provider.targetFromTab(tab);
+  return target.error ? target : { provider, ...target };
+}
+
+async function refreshTarget() {
   if (state.busy) return;
-  state.tab = await findYahooTab();
-  if (!state.tab) {
-    setStatus("Open your Yahoo Fantasy Football league page (football.fantasysports.yahoo.com), then come back here.");
+  const target = targetFromInput() || (await targetFromTabs());
+  if (!target || target.error) {
+    state.target = null;
+    setStatus(target?.error || NO_LEAGUE_MESSAGE, Boolean(target?.error && el.leagueInput.value.trim()));
     el.scanButton.disabled = true;
     return;
   }
-  const hints = await getPageHints(state.tab);
-  const leagueId = hints?.leagueId || yahooLeagueIdFromUrl(state.tab.url);
-  if (!leagueId) {
-    setStatus("Yahoo is open, but not on a league page. Open one of your leagues, then come back here.");
-    el.scanButton.disabled = true;
-    return;
-  }
-  setStatus(`League ${leagueId} detected. Make sure you're signed in to Yahoo, then find its seasons.`);
+  state.target = target;
+  setStatus(`${target.status} Then click Find seasons.`);
   el.scanButton.disabled = false;
 }
 
 // --- Season discovery ------------------------------------------------------
 
-function pickerYears(chain, expectedProbeYears, dropdownYears) {
-  const base =
-    dropdownYears?.length >= 2
-      ? dropdownYears
-      : expectedProbeYears?.length
-        ? expectedProbeYears
-        : chain.map((entry) => entry.season);
-  return [...new Set([...base, ...chain.map((entry) => entry.season)])].sort(
-    (a, b) => Number(a) - Number(b)
-  );
-}
-
 async function scanSeasons() {
+  const target = state.target;
+  if (!target) return;
   state.cancelRequested = false;
+  state.provider = target.provider;
+  state.scan = null;
   state.archive = null;
   state.bundles = new Map();
   el.picker.hidden = true;
@@ -156,74 +156,15 @@ async function scanSeasons() {
   setProgress(0, 1, "Looking for your league's seasons…");
 
   try {
-    const tab = state.tab;
-    const pageHints = (await getPageHints(tab)) || {};
-    const leagueId = pageHints.leagueId || yahooLeagueIdFromUrl(tab.url);
-    if (!leagueId) throw new Error("Open one of your Yahoo league pages first.");
-
-    const fetchJson = createYahooFetcher(tab, { onFailure: recordFailure });
-    const hintSeason = yahooSeasonFromUrl(tab.url) || pageHints.season || null;
-    let hintLeagueKey = pageHints.leagueKey || null;
-    if (hintLeagueKey && !leagueKeyMatchesLeagueId(hintLeagueKey, leagueId)) hintLeagueKey = null;
-    if (hintSeason && NFL_GAME_KEYS_BY_SEASON[hintSeason] && pageHints.leagueKeys?.length) {
-      const seasonKey = `${NFL_GAME_KEYS_BY_SEASON[hintSeason]}.l.${leagueId}`;
-      if (pageHints.leagueKeys.includes(seasonKey)) hintLeagueKey = seasonKey;
-    }
-    const franchiseSlug = yahooLeagueSlugFromUrl(tab.url) || pageHints.leagueSlug || null;
-
-    logLine(
-      `Page: ${new URL(tab.url).pathname} | season ${hintSeason || "?"} | slug ${franchiseSlug || "none"} | ` +
-        `dropdown years [${(pageHints.historicalSeasonYears || []).join(", ")}] | ` +
-        `league ids [${(pageHints.leagueIds || []).join(", ")}] | keys [${(pageHints.leagueKeys || []).join(", ")}]`
-    );
-    const resolved = await resolveYahooLeagueKey({ leagueId, hintSeason, hintLeagueKey, fetchJson });
-    logLine(`Using Yahoo league key ${resolved.league_key}.`);
-
-    const dropdownYears = pageHints.historicalSeasonYears || [];
-    const navYears = [...new Set([...dropdownYears, hintSeason].filter(Boolean))];
-    const hintYears = dropdownYears.length >= 2 ? dropdownYears : navYears.length ? navYears : null;
-    const slugRange = Boolean(franchiseSlug) && !(dropdownYears.length >= 2);
-    const expectedProbeYears = expandSeasonYearHints(hintYears || navYears, {
-      hintSeason,
-      franchiseSlugRange: slugRange
-    });
-    const franchiseLeagueIds = [
-      ...new Set([leagueId, ...(pageHints.leagueIds || [])].filter(Boolean).map(String))
-    ];
-
-    const chain = await discoverYahooLeagueChain({
-      startLeagueKey: resolved.league_key,
-      anchorLeagueId: leagueId,
-      hintSeason,
-      hintLeagueKeys: pageHints.leagueKeys || null,
-      hintSeasonYears: hintYears,
-      franchiseSlugRange: slugRange,
-      franchiseSlug,
-      franchiseLeagueIds: franchiseSlug ? franchiseLeagueIds : null,
-      fetchFranchiseSeasonHtml: franchiseSlug
-        ? (slug, year) => fetchFranchiseSeasonPageHtml(tab, slug, year)
-        : null,
-      fetchJson
-    });
-    if (!chain.length) throw new Error("No Yahoo seasons were found for this league.");
-
-    state.scan = { leagueId, chain, fetchJson };
-    showPicker(chain, pickerYears(chain, expectedProbeYears, dropdownYears));
-    if (!franchiseSlug && chain.length === 1 && dropdownYears.length > 1) {
-      logLine(
-        "Only one season found. Yahoo gives a league a new ID when it is recreated, so older seasons can't be reached from this page. " +
-          "Open a past season instead (from the season dropdown, or a URL like football.fantasysports.yahoo.com/league/<league-name>/2024) and click Find seasons again.",
-        "error"
-      );
-    }
-    const seasons = chain.map((entry) => entry.season);
-    logLine(
-      "Chain: " + chain.map((entry) => `${entry.season}=${entry.leagueKey}`).join(", ")
-    );
+    const scan = await target.provider.scan(target, { log: logLine, recordFailure });
+    if (!scan.chain.length) throw new Error("No seasons were found for this league.");
+    state.scan = scan;
+    showPicker(scan.chain, scan.years);
+    const seasons = scan.chain.map((entry) => entry.season);
     logLine(`Found ${seasons.length} season${seasons.length === 1 ? "" : "s"}: ${seasons.join(", ")}.`, "ok");
     setStatus("Choose which seasons to download.");
   } catch (error) {
-    const message = error instanceof CancelledError ? "Cancelled." : friendlyYahooError(error);
+    const message = friendlyError(error);
     setStatus(message, true);
     logLine(message, "error");
     logTrace();
@@ -247,8 +188,7 @@ function showPicker(chain, years) {
     if (!found.has(year)) label.className = "missing";
     el.seasonList.appendChild(label);
   }
-  el.pickerHint.textContent =
-    "More seasons means more requests to Yahoo. If Yahoo rate-limits you, wait a bit and download fewer seasons at a time.";
+  el.pickerHint.textContent = state.provider.pickerHint;
   el.picker.hidden = false;
 }
 
@@ -258,63 +198,11 @@ function setAllSeasons(checked) {
 
 // --- Download --------------------------------------------------------------
 
-async function fetchSeasonWeekData({ entry, fetchJson, onStep }) {
-  const weeks = weekNumbersFromLeagueMetadata(entry.metadata || {});
-  const scoreboardsByWeek = {};
-  const rosterPayloads = [];
-
-  for (const week of weeks) {
-    throwIfCancelled();
-    onStep(`${entry.season} week ${week} scoreboard`);
-    try {
-      const payload = await fetchJson(leagueScoreboardUrl(entry.leagueKey, week));
-      scoreboardsByWeek[String(week)] = parseLeagueScoreboard(payload, week);
-    } catch (error) {
-      if (isYahooRetryableFetchError(error)) continue;
-      throw error;
-    }
-  }
-
-  for (const week of weeks) {
-    const scoreboard = scoreboardsByWeek[String(week)];
-    if (!scoreboard?.matchups?.length) continue;
-    const teamIds = new Set();
-    for (const matchup of scoreboard.matchups) {
-      for (const team of matchup.teams || []) {
-        if (team.team_id != null) teamIds.add(String(team.team_id));
-      }
-    }
-    for (const teamId of teamIds) {
-      throwIfCancelled();
-      onStep(`${entry.season} week ${week} lineup (team ${teamId})`);
-      const teamKey = teamKeyFromParts(entry.leagueKey, teamId);
-      try {
-        let payload;
-        try {
-          payload = await fetchJson(teamRosterWeekStatsUrl(teamKey, week));
-        } catch (statsError) {
-          if (!isYahooRetryableFetchError(statsError)) throw statsError;
-          payload = await fetchJson(teamRosterWeekUrl(teamKey, week));
-        }
-        rosterPayloads.push({ week, teamId, payload: parseTeamRosterWeek(payload) });
-      } catch (error) {
-        if (isYahooRetryableFetchError(error)) continue;
-        throw error;
-      }
-    }
-  }
-
-  return { scoreboardsByWeek, rosterPayloads };
-}
-
-function buildArchive(leagueId, selectedChain) {
-  const seasonBundles = selectedChain
-    .map((entry) => state.bundles.get(entry.season))
-    .filter(Boolean);
-  if (!seasonBundles.length) return null;
-  const archive = normalizeYahooImport({ providerLeagueId: leagueId, seasonBundles });
-  state.archive = archive;
-  return archive;
+function buildArchive(selectedChain) {
+  const bundles = selectedChain.map((entry) => state.bundles.get(entry.season)).filter(Boolean);
+  if (!bundles.length) return null;
+  state.archive = state.provider.buildArchive(state.scan, bundles);
+  return state.archive;
 }
 
 function showResult(archive, { partial = false, total = 0 } = {}) {
@@ -334,8 +222,8 @@ async function downloadSeasons() {
     setStatus("Select at least one season.", true);
     return;
   }
-  const { leagueId, chain, fetchJson } = state.scan;
-  const selectedChain = chain.filter((entry) => selected.has(entry.season));
+  const { provider, scan } = state;
+  const selectedChain = scan.chain.filter((entry) => selected.has(entry.season));
   const todo = selectedChain.filter((entry) => !state.bundles.has(entry.season));
 
   state.cancelRequested = false;
@@ -346,63 +234,30 @@ async function downloadSeasons() {
   const resumed = selectedChain.length - todo.length;
   if (resumed) logLine(`Keeping ${resumed} season${resumed === 1 ? "" : "s"} already fetched; fetching the other ${todo.length}.`);
 
-  const estimatedSteps = todo.reduce(
-    (sum, entry) => sum + weekNumbersFromLeagueMetadata(entry.metadata || {}).length * 13 + 3,
-    1
-  );
+  const estimatedSteps = todo.reduce((sum, entry) => sum + provider.estimateSteps(entry), 1);
   let done = 0;
   const step = (text) => setProgress(++done, estimatedSteps, text);
+  const context = { step, log: logLine, throwIfCancelled, recordFailure };
 
   try {
     for (const entry of todo) {
       throwIfCancelled();
-      step(`${entry.season} standings`);
-      const bundle = await fetchYahooSeasonBundle(entry.leagueKey, fetchJson);
-      bundle.metadata = bundle.metadata || entry.metadata;
-
-      throwIfCancelled();
-      step(`${entry.season} draft`);
-      try {
-        const draftPayload = await fetchJson(leagueDraftResultsUrl(entry.leagueKey));
-        bundle.yahooDraftResults = parseLeagueDraftResults(draftPayload);
-        if (bundle.yahooDraftResults?.picks?.length) {
-          const settingsPayload = await fetchJson(leagueSettingsUrl(entry.leagueKey));
-          bundle.yahooDraftSettings = parseLeagueDraftSettings(settingsPayload);
-        }
-      } catch (error) {
-        if (!isYahooRetryableFetchError(error) || error?.status === 999) throw error;
-        logLine(`${entry.season}: draft skipped (Yahoo returned a temporary error).`);
-      }
-
-      const weekData = await fetchSeasonWeekData({
-        entry: { ...entry, metadata: bundle.metadata },
-        fetchJson,
-        onStep: step
-      });
-      bundle.yahooScoreboardsByWeek = weekData.scoreboardsByWeek;
-      bundle.yahooRosterPayloads = weekData.rosterPayloads;
+      const { bundle, summary } = await provider.fetchSeason(scan, entry, context);
       state.bundles.set(entry.season, bundle); // only complete seasons are kept
-
-      const weeksWithMatchups = Object.values(weekData.scoreboardsByWeek).filter(
-        (scoreboard) => scoreboard?.matchups?.length
-      ).length;
-      logLine(
-        `${entry.season}: ${weeksWithMatchups} weeks of matchups, ${weekData.rosterPayloads.length} lineups.`,
-        "ok"
-      );
+      logLine(summary, "ok");
     }
 
     setProgress(estimatedSteps, estimatedSteps, "Building export…");
-    const archive = buildArchive(leagueId, selectedChain);
+    const archive = buildArchive(selectedChain);
     showResult(archive);
     setStatus("Download complete.");
     saveArchive();
   } catch (error) {
-    const message = error instanceof CancelledError ? "Cancelled." : friendlyYahooError(error);
+    const message = friendlyError(error);
     setStatus(message, true);
     logLine(message, "error");
     logTrace();
-    const partial = buildArchive(leagueId, selectedChain);
+    const partial = buildArchive(selectedChain);
     if (partial) showResult(partial, { partial: true, total: selectedChain.length });
   } finally {
     setBusy(false);
@@ -419,7 +274,7 @@ function saveArchive() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${safeName || "league"}-yahoo-history.json`;
+  link.download = `${safeName || "league"}-${state.archive.provider}-history.json`;
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -437,10 +292,14 @@ el.cancelButton.addEventListener("click", () => {
 });
 el.selectAll.addEventListener("click", () => setAllSeasons(true));
 el.selectNone.addEventListener("click", () => setAllSeasons(false));
-
-chrome.tabs.onActivated.addListener(refreshTab);
-chrome.tabs.onUpdated.addListener((_id, info) => {
-  if (info.status === "complete") refreshTab();
+el.leagueInput.addEventListener("input", refreshTarget);
+el.leagueInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && !el.scanButton.disabled) scanSeasons();
 });
 
-refreshTab();
+chrome.tabs.onActivated.addListener(refreshTarget);
+chrome.tabs.onUpdated.addListener((_id, info) => {
+  if (info.status === "complete") refreshTarget();
+});
+
+refreshTarget();
