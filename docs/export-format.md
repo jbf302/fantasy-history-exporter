@@ -27,7 +27,7 @@ Each season object includes:
 | `users` | one entry per manager (Yahoo account id, display name, team name) |
 | `rosters` | one entry per team |
 | `standings` | final rank, wins/losses/ties, points for/against |
-| `draft_picks` | pick order, team, player; auction price when applicable |
+| `draft_picks` | pick order, team, player; auction drafts add a numeric `amount` (price paid) per pick, and `drafts[].settings.budget` when Yahoo reports one. `drafts[].metadata.yahoo_pick_fields` lists the fields Yahoo returned. Keepers are not reported (`is_keeper` is always false) |
 | `players` | `yahoo:<id>` keyed catalog of every player seen (name, position, NFL team) |
 | `matchups_by_week` | per team per week: `points`, `starters`, `players`, `players_points`, and matchup metadata (`is_playoffs`, `is_consolation`) |
 
