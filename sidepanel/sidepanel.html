@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yahoo History Exporter</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Yahoo History Exporter</h1>
+      <p class="muted">Download your Yahoo Fantasy Football league's history as a JSON file. Runs entirely in your browser using your own Yahoo login.</p>
+    </header>
+
+    <section id="status" class="card" aria-live="polite">
+      <p id="statusText">Checking for a Yahoo league tab…</p>
+      <button id="scanButton" type="button" disabled>Find seasons</button>
+    </section>
+
+    <section id="picker" class="card" hidden>
+      <h2>Seasons</h2>
+      <p class="muted" id="pickerHint"></p>
+      <div class="row">
+        <button id="selectAll" type="button" class="link">All</button>
+        <button id="selectNone" type="button" class="link">None</button>
+      </div>
+      <ul id="seasonList"></ul>
+      <button id="downloadButton" type="button">Download selected seasons</button>
+    </section>
+
+    <section id="progress" class="card" hidden>
+      <progress id="bar" max="100" value="0"></progress>
+      <p id="progressText" class="muted"></p>
+      <button id="cancelButton" type="button" class="secondary">Cancel</button>
+    </section>
+
+    <section id="result" class="card" hidden>
+      <h2>Done</h2>
+      <p id="resultText"></p>
+      <button id="saveButton" type="button">Save JSON file</button>
+    </section>
+
+    <section id="logCard" class="card" hidden>
+      <h2>Activity</h2>
+      <ul id="log"></ul>
+    </section>
+
+    <footer class="muted">
+      Unofficial. Not affiliated with or endorsed by Yahoo. Your data stays on your computer; the only requests this extension makes are to Yahoo Fantasy. Fetching a long history can take several minutes.
+    </footer>
+  </main>
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "yahoo-fantasy-history-exporter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Chrome extension that exports a Yahoo Fantasy Football league's full history as JSON.",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check background.js && node --check content/yahoo-detector.js && node --check sidepanel/sidepanel.js && node --check lib/yahoo-api.js && node --check lib/yahoo-normalizer.js && node --check lib/yahoo-session.js && node -e \"JSON.parse(require('fs').readFileSync('manifest.json','utf8'))\"",
+    "icons": "node scripts/make-icons.mjs",
+    "package": "node scripts/package.mjs"
+  }
+}

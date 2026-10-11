@@ -1,0 +1,36 @@
+{
+  "fantasy_content": {
+    "xml:lang": "en-US",
+    "yahoo:uri": "/fantasy/v2/league/461.l.116514/draftresults",
+    "league": [
+      {
+        "league_key": "461.l.116514",
+        "league_id": "116514",
+        "season": "2025",
+        "draft_status": "postdraft"
+      },
+      {
+        "draft_results": {
+          "0": {
+            "draft_result": {
+              "pick": "1",
+              "round": "1",
+              "cost": "72",
+              "team_key": "461.l.116514.t.6",
+              "player_key": "461.p.30123"
+            }
+          },
+          "1": {
+            "draft_result": {
+              "pick": "2",
+              "round": "1",
+              "cost": "68",
+              "team_key": "461.l.116514.t.9",
+              "player_key": "461.p.31002"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

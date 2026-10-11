@@ -1,0 +1,68 @@
+:root {
+  --bg: #f6f6f8;
+  --card: #ffffff;
+  --text: #1b1b24;
+  --muted: #666672;
+  --border: #dcdce4;
+  --accent: #5b21b6;
+  --accent-text: #ffffff;
+  --error: #b42318;
+  --ok: #067647;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14141a;
+    --card: #1e1e27;
+    --text: #ececf3;
+    --muted: #9a9aa8;
+    --border: #34343f;
+    --accent: #a78bfa;
+    --accent-text: #14141a;
+    --error: #f97066;
+    --ok: #47cd89;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { padding: 16px; display: grid; gap: 12px; }
+h1 { font-size: 18px; margin: 0 0 4px; }
+h2 { font-size: 14px; margin: 0 0 8px; }
+p { margin: 0 0 10px; }
+.muted { color: var(--muted); font-size: 13px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+[hidden] { display: none !important; }
+button {
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 14px;
+  background: var(--accent);
+  color: var(--accent-text);
+  cursor: pointer;
+}
+button:disabled { opacity: 0.5; cursor: default; }
+button.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+button.link { background: none; color: var(--accent); padding: 0 8px 0 0; font-weight: 500; }
+.row { display: flex; gap: 8px; margin-bottom: 6px; }
+ul { list-style: none; margin: 0 0 12px; padding: 0; }
+#seasonList { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 4px 12px; }
+#seasonList label { display: flex; gap: 6px; align-items: center; }
+#seasonList .missing { color: var(--muted); }
+#log { max-height: 240px; overflow-y: auto; margin: 0; font-size: 13px; }
+#log li { padding: 2px 0; }
+#log li.error { color: var(--error); }
+#log li.ok { color: var(--ok); }
+progress { width: 100%; height: 10px; margin-bottom: 8px; }
+footer { padding: 0 2px 8px; font-size: 12px; }
+.error-text { color: var(--error); }

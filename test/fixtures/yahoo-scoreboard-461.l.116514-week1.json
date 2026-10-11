@@ -1,0 +1,57 @@
+{
+  "fantasy_content": {
+    "xml:lang": "en-US",
+    "yahoo:uri": "/fantasy/v2/league/461.l.116514/scoreboard;week=1",
+    "league": [
+      {
+        "league_key": "461.l.116514",
+        "league_id": "116514",
+        "season": "2025"
+      },
+      {
+        "scoreboard": [
+          {
+            "week": "1",
+            "matchups": [
+              {
+                "matchup": [
+                  {
+                    "week": "1",
+                    "status": "postevent",
+                    "is_playoffs": "0",
+                    "is_consolation": "0",
+                    "winner_team_key": "461.l.116514.t.9"
+                  },
+                  {
+                    "teams": {
+                      "0": {
+                        "team": [
+                          [
+                            { "team_key": "461.l.116514.t.9" },
+                            { "team_id": "9" },
+                            { "name": "Champion" },
+                            { "team_points": { "coverage_type": "week", "week": "1", "total": "112.34" } }
+                          ]
+                        ]
+                      },
+                      "1": {
+                        "team": [
+                          [
+                            { "team_key": "461.l.116514.t.3" },
+                            { "team_id": "3" },
+                            { "name": "Pat's Hype" },
+                            { "team_points": { "coverage_type": "week", "week": "1", "total": "98.76" } }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

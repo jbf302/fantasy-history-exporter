@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Fantasy History Exporter for Yahoo",
+  "short_name": "Yahoo History Exporter",
+  "version": "0.1.0",
+  "description": "Download your Yahoo Fantasy Football league's full history (standings, drafts, matchups, lineups) as a JSON file. Unofficial; not affiliated with Yahoo.",
+  "minimum_chrome_version": "116",
+  "permissions": ["sidePanel", "declarativeNetRequest"],
+  "host_permissions": [
+    "https://football.fantasysports.yahoo.com/*",
+    "https://fantasysports.yahooapis.com/*",
+    "https://pub-api-ro.fantasysports.yahoo.com/*",
+    "https://pub-api-rw.fantasysports.yahoo.com/*"
+  ],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "side_panel": { "default_path": "sidepanel/sidepanel.html" },
+  "action": {
+    "default_title": "Yahoo History Exporter",
+    "default_icon": { "16": "assets/icon16.png", "32": "assets/icon32.png", "48": "assets/icon48.png", "128": "assets/icon128.png" }
+  },
+  "icons": { "16": "assets/icon16.png", "32": "assets/icon32.png", "48": "assets/icon48.png", "128": "assets/icon128.png" },
+  "content_scripts": [
+    {
+      "matches": ["https://football.fantasysports.yahoo.com/*"],
+      "js": ["content/yahoo-detector.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

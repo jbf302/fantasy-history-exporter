@@ -1,0 +1,17 @@
+{
+  "fantasy_content": {
+    "league": [
+      [{ "league_key": "461.l.116514", "season": "2025" }],
+      {
+        "settings": [
+          {
+            "draft_type": "auction",
+            "draft_time": "1725120000",
+            "pick_time": "30",
+            "is_auction": "1"
+          }
+        ]
+      }
+    ]
+  }
+}

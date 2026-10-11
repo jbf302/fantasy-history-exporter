@@ -1,0 +1,45 @@
+{
+  "fantasy_content": {
+    "xml:lang": "en-US",
+    "yahoo:uri": "/fantasy/v2/team/461.l.116514.t.9/roster;week=1",
+    "team": [
+      [
+        { "team_key": "461.l.116514.t.9" },
+        { "team_id": "9" }
+      ],
+      {
+        "roster": [
+          {
+            "week": "1",
+            "players": {
+              "0": {
+                "player": [
+                  [
+                    { "player_key": "461.p.30123" },
+                    { "player_id": "30123" },
+                    { "name": { "full": "Patrick Mahomes" } },
+                    { "display_position": "QB" },
+                    { "selected_position": { "position": "QB" } },
+                    { "player_points": { "total": "24.50" } }
+                  ]
+                ]
+              },
+              "1": {
+                "player": [
+                  [
+                    { "player_key": "461.p.31002" },
+                    { "player_id": "31002" },
+                    { "name": { "full": "Bench Player" } },
+                    { "display_position": "RB" },
+                    { "selected_position": { "position": "BN" } },
+                    { "player_points": { "total": "3.20" } }
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
