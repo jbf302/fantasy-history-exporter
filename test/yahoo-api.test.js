@@ -503,3 +503,49 @@ test("discoverYahooLeagueChain ignores transient Yahoo errors while probing olde
     ["2025", "2026"]
   );
 });
+
+test("discoverYahooLeagueChain resolves seasons through slug pages without probing the old league id", async () => {
+  const idsByYear = { 2022: ["414", "100"], 2023: ["423", "200"], 2024: ["449", "300"] };
+  const requested = [];
+  const fetchJson = async (url) => {
+    requested.push(url);
+    for (const [year, [game, id]] of Object.entries(idsByYear)) {
+      if (url.includes(`/league/${game}.l.${id}/metadata`)) {
+        return {
+          fantasy_content: {
+            league: [
+              [
+                {
+                  league_key: `${game}.l.${id}`,
+                  league_id: id,
+                  season: year,
+                  url: `https://football.fantasysports.yahoo.com/league/sfpl/${year}`
+                }
+              ]
+            ]
+          }
+        };
+      }
+    }
+    throw new YahooApiError("not found", 404, url);
+  };
+  const fetchFranchiseSeasonHtml = async (_slug, year) => {
+    const [game, id] = idsByYear[year] || [];
+    return game ? `<script>"league_key":"${game}.l.${id}","league_id":"${id}"</script>` : null;
+  };
+
+  const chain = await discoverYahooLeagueChain({
+    startLeagueKey: "449.l.300",
+    anchorLeagueId: "300",
+    hintSeason: "2024",
+    hintSeasonYears: ["2022", "2023", "2024"],
+    franchiseSlug: "sfpl",
+    franchiseLeagueIds: ["300"],
+    fetchFranchiseSeasonHtml,
+    fetchJson
+  });
+
+  assert.deepEqual(chain.map((entry) => entry.season), ["2022", "2023", "2024"]);
+  const sameIdProbes = requested.filter((url) => /\.l\.300\//.test(url) && !url.includes("449.l.300"));
+  assert.deepEqual(sameIdProbes, [], "no game-key probes with the newest league id for other years");
+});

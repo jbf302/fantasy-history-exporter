@@ -52,8 +52,6 @@ const el = {
   log: $("log")
 };
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 class CancelledError extends Error {}
 
 // Recent failed Yahoo requests, shown in the log when a scan or download fails.
@@ -75,6 +73,7 @@ const state = {
   tab: null,
   scan: null, // { leagueId, chain, fetchJson }
   archive: null,
+  bundles: new Map(), // season -> fetched bundle; survives failures so a retry resumes
   cancelRequested: false,
   busy: false
 };
@@ -149,6 +148,7 @@ function pickerYears(chain, expectedProbeYears, dropdownYears) {
 async function scanSeasons() {
   state.cancelRequested = false;
   state.archive = null;
+  state.bundles = new Map();
   el.picker.hidden = true;
   el.result.hidden = true;
   el.log.replaceChildren();
@@ -266,7 +266,6 @@ async function fetchSeasonWeekData({ entry, fetchJson, onStep }) {
   for (const week of weeks) {
     throwIfCancelled();
     onStep(`${entry.season} week ${week} scoreboard`);
-    await sleep(80);
     try {
       const payload = await fetchJson(leagueScoreboardUrl(entry.leagueKey, week));
       scoreboardsByWeek[String(week)] = parseLeagueScoreboard(payload, week);
@@ -288,7 +287,6 @@ async function fetchSeasonWeekData({ entry, fetchJson, onStep }) {
     for (const teamId of teamIds) {
       throwIfCancelled();
       onStep(`${entry.season} week ${week} lineup (team ${teamId})`);
-      await sleep(100);
       const teamKey = teamKeyFromParts(entry.leagueKey, teamId);
       try {
         let payload;
@@ -309,6 +307,25 @@ async function fetchSeasonWeekData({ entry, fetchJson, onStep }) {
   return { scoreboardsByWeek, rosterPayloads };
 }
 
+function buildArchive(leagueId, selectedChain) {
+  const seasonBundles = selectedChain
+    .map((entry) => state.bundles.get(entry.season))
+    .filter(Boolean);
+  if (!seasonBundles.length) return null;
+  const archive = normalizeYahooImport({ providerLeagueId: leagueId, seasonBundles });
+  state.archive = archive;
+  return archive;
+}
+
+function showResult(archive, { partial = false, total = 0 } = {}) {
+  const count = archive.summary?.total_seasons ?? Object.keys(archive.seasons || {}).length;
+  el.resultText.textContent = partial
+    ? `Partial export: ${count} of ${total} selected season${total === 1 ? "" : "s"} ready. You can save these now, or fix the problem and click Download again to fetch the rest (seasons already fetched are kept).`
+    : `${archive.name}: ${count} season${count === 1 ? "" : "s"} ready.`;
+  el.result.querySelector("h2").textContent = partial ? "Partially done" : "Done";
+  el.result.hidden = false;
+}
+
 async function downloadSeasons() {
   const selected = new Set(
     [...el.seasonList.querySelectorAll("input:checked:not(:disabled)")].map((input) => input.value)
@@ -319,13 +336,17 @@ async function downloadSeasons() {
   }
   const { leagueId, chain, fetchJson } = state.scan;
   const selectedChain = chain.filter((entry) => selected.has(entry.season));
+  const todo = selectedChain.filter((entry) => !state.bundles.has(entry.season));
 
   state.cancelRequested = false;
   state.archive = null;
   el.result.hidden = true;
   setBusy(true);
 
-  const estimatedSteps = selectedChain.reduce(
+  const resumed = selectedChain.length - todo.length;
+  if (resumed) logLine(`Keeping ${resumed} season${resumed === 1 ? "" : "s"} already fetched; fetching the other ${todo.length}.`);
+
+  const estimatedSteps = todo.reduce(
     (sum, entry) => sum + weekNumbersFromLeagueMetadata(entry.metadata || {}).length * 13 + 3,
     1
   );
@@ -333,8 +354,7 @@ async function downloadSeasons() {
   const step = (text) => setProgress(++done, estimatedSteps, text);
 
   try {
-    const seasonBundles = [];
-    for (const entry of selectedChain) {
+    for (const entry of todo) {
       throwIfCancelled();
       step(`${entry.season} standings`);
       const bundle = await fetchYahooSeasonBundle(entry.leagueKey, fetchJson);
@@ -342,17 +362,15 @@ async function downloadSeasons() {
 
       throwIfCancelled();
       step(`${entry.season} draft`);
-      await sleep(100);
       try {
         const draftPayload = await fetchJson(leagueDraftResultsUrl(entry.leagueKey));
         bundle.yahooDraftResults = parseLeagueDraftResults(draftPayload);
         if (bundle.yahooDraftResults?.picks?.length) {
-          await sleep(80);
           const settingsPayload = await fetchJson(leagueSettingsUrl(entry.leagueKey));
           bundle.yahooDraftSettings = parseLeagueDraftSettings(settingsPayload);
         }
       } catch (error) {
-        if (!isYahooRetryableFetchError(error)) throw error;
+        if (!isYahooRetryableFetchError(error) || error?.status === 999) throw error;
         logLine(`${entry.season}: draft skipped (Yahoo returned a temporary error).`);
       }
 
@@ -363,7 +381,7 @@ async function downloadSeasons() {
       });
       bundle.yahooScoreboardsByWeek = weekData.scoreboardsByWeek;
       bundle.yahooRosterPayloads = weekData.rosterPayloads;
-      seasonBundles.push(bundle);
+      state.bundles.set(entry.season, bundle); // only complete seasons are kept
 
       const weeksWithMatchups = Object.values(weekData.scoreboardsByWeek).filter(
         (scoreboard) => scoreboard?.matchups?.length
@@ -375,10 +393,8 @@ async function downloadSeasons() {
     }
 
     setProgress(estimatedSteps, estimatedSteps, "Building export…");
-    state.archive = normalizeYahooImport({ providerLeagueId: leagueId, seasonBundles });
-    const count = state.archive.summary?.total_seasons ?? seasonBundles.length;
-    el.resultText.textContent = `${state.archive.name}: ${count} season${count === 1 ? "" : "s"} ready.`;
-    el.result.hidden = false;
+    const archive = buildArchive(leagueId, selectedChain);
+    showResult(archive);
     setStatus("Download complete.");
     saveArchive();
   } catch (error) {
@@ -386,6 +402,8 @@ async function downloadSeasons() {
     setStatus(message, true);
     logLine(message, "error");
     logTrace();
+    const partial = buildArchive(leagueId, selectedChain);
+    if (partial) showResult(partial, { partial: true, total: selectedChain.length });
   } finally {
     setBusy(false);
   }
