@@ -24,7 +24,7 @@ Works in Chrome and other Chromium browsers (Edge, Brave, Arc) version 116 or ne
 4. Wait. A league with many seasons makes a lot of requests (weekly scoreboards plus every team's lineup for every week) and can take several minutes. Keep a `football.fantasysports.yahoo.com` tab open and signed in.
 5. A `…-yahoo-history.json` file is saved to your downloads. Use **Save JSON file** to save it again.
 
-Requests are deliberately paced (a few per second) because Yahoo blocks browsers that send bursts. If Yahoo returns a temporary error the extension backs off and retries. If it blocks you outright (error 999), it stops, keeps the seasons it already fetched so you can save a partial file, and asks you to wait 30–60 minutes. Click **Download** again afterwards to pick up where it left off. Scanning repeatedly in a short time makes blocks more likely.
+Requests are deliberately paced (a few per second) because Yahoo blocks browsers that send bursts. If Yahoo returns a temporary error the extension backs off and retries. If it blocks you outright (error 999), it stops, keeps the seasons it already fetched so you can save a partial file, and asks you to wait 30–60 minutes. Click **Download** again afterwards to pick up where it left off. Scanning repeatedly in a short time makes blocks more likely. Yahoo throttles by network and account, not by browser, so run one export at a time: exporting several leagues at once, or from multiple browsers or devices on the same network, adds up and makes blocks much more likely.
 
 If your league has a custom name in its URL (`/league/<name>/<year>`), starting from that kind of page is the most reliable way to find every season.
 
