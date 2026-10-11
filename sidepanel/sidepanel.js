@@ -24,6 +24,7 @@ import {
 import { normalizeYahooImport } from "../lib/yahoo-normalizer.js";
 import {
   createYahooFetcher,
+  describeYahooError,
   fetchFranchiseSeasonPageHtml,
   findYahooTab,
   friendlyYahooError,
@@ -54,6 +55,21 @@ const el = {
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 class CancelledError extends Error {}
+
+// Recent failed Yahoo requests, shown in the log when a scan or download fails.
+const trace = [];
+function recordFailure(error, requestUrl) {
+  const line = describeYahooError(error, requestUrl);
+  if (!line) return;
+  trace.push(line);
+  if (trace.length > 12) trace.shift();
+}
+function logTrace() {
+  if (!trace.length) return;
+  logLine("Recent failed requests (newest last):", "error");
+  for (const line of trace) logLine(line, "error");
+  trace.length = 0;
+}
 
 const state = {
   tab: null,
@@ -145,7 +161,7 @@ async function scanSeasons() {
     const leagueId = pageHints.leagueId || yahooLeagueIdFromUrl(tab.url);
     if (!leagueId) throw new Error("Open one of your Yahoo league pages first.");
 
-    const fetchJson = createYahooFetcher(tab);
+    const fetchJson = createYahooFetcher(tab, { onFailure: recordFailure });
     const hintSeason = yahooSeasonFromUrl(tab.url) || pageHints.season || null;
     let hintLeagueKey = pageHints.leagueKey || null;
     if (hintLeagueKey && !leagueKeyMatchesLeagueId(hintLeagueKey, leagueId)) hintLeagueKey = null;
@@ -210,6 +226,7 @@ async function scanSeasons() {
     const message = error instanceof CancelledError ? "Cancelled." : friendlyYahooError(error);
     setStatus(message, true);
     logLine(message, "error");
+    logTrace();
   } finally {
     setBusy(false);
   }
@@ -368,6 +385,7 @@ async function downloadSeasons() {
     const message = error instanceof CancelledError ? "Cancelled." : friendlyYahooError(error);
     setStatus(message, true);
     logLine(message, "error");
+    logTrace();
   } finally {
     setBusy(false);
   }

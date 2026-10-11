@@ -57,7 +57,8 @@ async function fetchYahooJsonForExtension(url) {
       ok: false,
       status: error instanceof YahooApiError ? error.status : 0,
       finalUrl: url,
-      message: error?.message || "Yahoo request failed."
+      message: error?.message || "Yahoo request failed.",
+      bodyPreview: error?.details?.response_preview
     };
   }
 }

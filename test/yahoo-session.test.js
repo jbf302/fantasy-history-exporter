@@ -86,3 +86,16 @@ test("friendlyYahooError maps sign-in and network failures to plain language", (
   assert.match(friendlyYahooError(new YahooApiError("boom", 0, "u")), /Couldn't reach Yahoo/);
   assert.equal(friendlyYahooError(new Error("plain")), "plain");
 });
+
+test("fetcher stops sending requests after Yahoo answers 999", async () => {
+  const calls = stubChrome({
+    tabResponses: {},
+    workerResponses: { "pub-api-rw.fantasysports.yahoo.com": { ok: false, status: 999, message: "Request denied" } }
+  });
+  const fetchJson = createYahooFetcher(tab);
+  await assert.rejects(fetchJson(API_URL), (error) => error.status === 999);
+  const before = calls.length;
+  await assert.rejects(fetchJson(API_URL), (error) => error.status === 999);
+  assert.equal(calls.length, before, "no new requests once blocked");
+  assert.match(friendlyYahooError(new YahooApiError("x", 999, "u")), /blocking requests/);
+});
