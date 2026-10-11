@@ -28,7 +28,7 @@ function stubChrome({ tabResponses = {}, workerResponses = {} }) {
 }
 
 const FAST = { minIntervalMs: 0, jitterMs: 0, backoffMs: [] };
-const tab = { id: 7, url: "https://football.fantasysports.yahoo.com/f1/116514" };
+const tab = { id: 7, url: "https://football.fantasysports.yahoo.com/f1/123456" };
 
 test("isYahooFantasyPage only accepts the Yahoo football host", () => {
   assert.equal(isYahooFantasyPage(tab), true);

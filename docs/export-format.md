@@ -23,7 +23,7 @@ Each season object includes:
 
 | Key | Contents |
 | --- | --- |
-| `league` | name, status, scoring/roster settings Yahoo exposes |
+| `league` | name, status, and basic settings (scoring type, roster size, etc.); scoring rules are not included |
 | `users` | one entry per manager (Yahoo account id, display name, team name) |
 | `rosters` | one entry per team |
 | `standings` | final rank, wins/losses/ties, points for/against |
