@@ -89,6 +89,18 @@ function yahooLeagueSlugFromPath(url = window.location.href) {
   }
 }
 
+// /f1/<id> URLs carry no league name, but the page links to its past seasons
+// as /league/<slug>/<year>; take the most common slug among those links.
+function yahooLeagueSlugFromLinks() {
+  const counts = new Map();
+  for (const anchor of document.querySelectorAll('a[href*="/league/"]')) {
+    const match = (anchor.getAttribute("href") || "").match(/\/league\/([^/?#]+)\/\d{4}(?:[/?#]|$)/);
+    if (!match || /^\d+$/.test(match[1])) continue;
+    counts.set(match[1], (counts.get(match[1]) || 0) + 1);
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+}
+
 function historicalSeasonYearsFromPage(leagueId) {
   const years = new Set();
   const pathSeason = yahooSeasonFromPath();
@@ -192,7 +204,7 @@ function pageHints() {
     leagueIds,
     leagueKey: leagueKeyFromPage(leagueId),
     leagueKeys,
-    leagueSlug: yahooLeagueSlugFromPath(),
+    leagueSlug: yahooLeagueSlugFromPath() || yahooLeagueSlugFromLinks(),
     historicalSeasonYears,
     season
   };

@@ -155,6 +155,11 @@ async function scanSeasons() {
     }
     const franchiseSlug = yahooLeagueSlugFromUrl(tab.url) || pageHints.leagueSlug || null;
 
+    logLine(
+      `Page: ${new URL(tab.url).pathname} | season ${hintSeason || "?"} | slug ${franchiseSlug || "none"} | ` +
+        `dropdown years [${(pageHints.historicalSeasonYears || []).join(", ")}] | ` +
+        `league ids [${(pageHints.leagueIds || []).join(", ")}] | keys [${(pageHints.leagueKeys || []).join(", ")}]`
+    );
     const resolved = await resolveYahooLeagueKey({ leagueId, hintSeason, hintLeagueKey, fetchJson });
     logLine(`Using Yahoo league key ${resolved.league_key}.`);
 
@@ -188,7 +193,17 @@ async function scanSeasons() {
 
     state.scan = { leagueId, chain, fetchJson };
     showPicker(chain, pickerYears(chain, expectedProbeYears, dropdownYears));
+    if (!franchiseSlug && chain.length === 1 && dropdownYears.length > 1) {
+      logLine(
+        "Only one season found. Yahoo gives a league a new ID when it is recreated, so older seasons can't be reached from this page. " +
+          "Open a past season instead (from the season dropdown, or a URL like football.fantasysports.yahoo.com/league/<league-name>/2024) and click Find seasons again.",
+        "error"
+      );
+    }
     const seasons = chain.map((entry) => entry.season);
+    logLine(
+      "Chain: " + chain.map((entry) => `${entry.season}=${entry.leagueKey}`).join(", ")
+    );
     logLine(`Found ${seasons.length} season${seasons.length === 1 ? "" : "s"}: ${seasons.join(", ")}.`, "ok");
     setStatus("Choose which seasons to download.");
   } catch (error) {
