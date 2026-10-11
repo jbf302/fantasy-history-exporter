@@ -1,10 +1,10 @@
-// Builds dist/yahoo-fantasy-history-exporter-<version>.zip containing only the
+// Builds dist/fantasy-history-exporter-<version>.zip containing only the
 // files the extension needs (no tests, fixtures, scripts or docs).
 import { readFileSync, mkdirSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 
 const { version } = JSON.parse(readFileSync("manifest.json", "utf8"));
-const out = `dist/yahoo-fantasy-history-exporter-${version}.zip`;
+const out = `dist/fantasy-history-exporter-${version}.zip`;
 mkdirSync("dist", { recursive: true });
 rmSync(out, { force: true });
 execFileSync(
