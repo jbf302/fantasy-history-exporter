@@ -8,7 +8,7 @@ These sites make this data hard to get out. With this you can build league recor
 
 ## Install (about 2 minutes)
 
-1. Download the latest **`yahoo-fantasy-history-exporter-*.zip`** from the [Releases](../../releases) page and unzip it.
+1. Download the latest **`fantasy-history-exporter-*.zip`** from the [Releases](../../releases) page and unzip it.
 2. In Chrome, open `chrome://extensions` and switch on **Developer mode** (top right).
 3. Click **Load unpacked** and choose the unzipped folder (the one containing `manifest.json`).
 
@@ -62,7 +62,7 @@ No build step; it's plain ES modules.
 ```bash
 npm test             # unit tests (fixtures are anonymized)
 npm run check        # syntax + manifest check
-npm run package      # dist/yahoo-fantasy-history-exporter-<version>.zip
+npm run package      # dist/fantasy-history-exporter-<version>.zip
 ```
 
 Load the repo root as an unpacked extension to try changes, and click **Reload** on `chrome://extensions` after editing.

@@ -1,5 +1,5 @@
 {
-  "name": "yahoo-fantasy-history-exporter",
+  "name": "fantasy-history-exporter",
   "version": "0.2.0",
   "private": true,
   "type": "module",
