@@ -1,10 +1,10 @@
 {
   "fantasy_content": {
     "xml:lang": "en-US",
-    "yahoo:uri": "/fantasy/v2/team/461.l.116514.t.9/roster;week=1",
+    "yahoo:uri": "/fantasy/v2/team/461.l.123456.t.9/roster;week=1",
     "team": [
       [
-        { "team_key": "461.l.116514.t.9" },
+        { "team_key": "461.l.123456.t.9" },
         { "team_id": "9" }
       ],
       {

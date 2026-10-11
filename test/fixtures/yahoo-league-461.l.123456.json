@@ -1,14 +1,14 @@
 {
  "fantasy_content": {
   "xml:lang": "en-US",
-  "yahoo:uri": "/fantasy/v2/league/461.l.116514;out=metadata,standings,teams",
+  "yahoo:uri": "/fantasy/v2/league/461.l.123456;out=metadata,standings,teams",
   "league": [
    {
-    "league_key": "461.l.116514",
-    "league_id": "116514",
-    "name": "Yahoo H2H-Pts 116514",
-    "url": "https://football.fantasysports.yahoo.com/2025/f1/116514",
-    "recordbook_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/recordbook?layout=webview&device=smartphone",
+    "league_key": "461.l.123456",
+    "league_id": "123456",
+    "name": "Yahoo H2H-Pts 123456",
+    "url": "https://football.fantasysports.yahoo.com/2025/f1/123456",
+    "recordbook_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/recordbook?layout=webview&device=smartphone",
     "logo_url": "https://s.yimg.com/cv/api/default/20180206/default-league-logo@2x.png",
     "draft_status": "postdraft",
     "num_teams": 10,
@@ -27,7 +27,7 @@
     "is_guillotine": "0",
     "matchup_week": 17,
     "iris_group_chat_id": "",
-    "short_invitation_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/invitation",
+    "short_invitation_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/invitation",
     "allow_add_to_dl_extra_pos": 1,
     "is_pro_league": "0",
     "is_cash_league": "0",
@@ -49,7 +49,7 @@
         "team": [
          [
           {
-           "team_key": "461.l.116514.t.9"
+           "team_key": "461.l.123456.t.9"
           },
           {
            "team_id": "9"
@@ -59,7 +59,7 @@
           },
           [],
           {
-           "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/9"
+           "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/9"
           },
           {
            "team_logos": [
@@ -103,7 +103,7 @@
           {
            "has_draft_grade": 1,
            "draft_grade": "A",
-           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/9/draftrecap"
+           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/9/draftrecap"
           },
           [],
           [],
@@ -155,7 +155,7 @@
         "team": [
          [
           {
-           "team_key": "461.l.116514.t.3"
+           "team_key": "461.l.123456.t.3"
           },
           {
            "team_id": "3"
@@ -165,7 +165,7 @@
           },
           [],
           {
-           "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/3"
+           "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/3"
           },
           {
            "team_logos": [
@@ -209,7 +209,7 @@
           {
            "has_draft_grade": 1,
            "draft_grade": "A+",
-           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/3/draftrecap"
+           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/3/draftrecap"
           },
           [],
           [],
@@ -261,7 +261,7 @@
         "team": [
          [
           {
-           "team_key": "461.l.116514.t.7"
+           "team_key": "461.l.123456.t.7"
           },
           {
            "team_id": "7"
@@ -271,7 +271,7 @@
           },
           [],
           {
-           "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/7"
+           "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/7"
           },
           {
            "team_logos": [
@@ -315,7 +315,7 @@
           {
            "has_draft_grade": 1,
            "draft_grade": "C-",
-           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/7/draftrecap"
+           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/7/draftrecap"
           },
           [],
           [],
@@ -367,7 +367,7 @@
         "team": [
          [
           {
-           "team_key": "461.l.116514.t.10"
+           "team_key": "461.l.123456.t.10"
           },
           {
            "team_id": "10"
@@ -377,7 +377,7 @@
           },
           [],
           {
-           "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/10"
+           "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/10"
           },
           {
            "team_logos": [
@@ -421,7 +421,7 @@
           {
            "has_draft_grade": 1,
            "draft_grade": "D",
-           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/10/draftrecap"
+           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/10/draftrecap"
           },
           [],
           [],
@@ -473,7 +473,7 @@
         "team": [
          [
           {
-           "team_key": "461.l.116514.t.5"
+           "team_key": "461.l.123456.t.5"
           },
           {
            "team_id": "5"
@@ -483,14 +483,14 @@
           },
           [],
           {
-           "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/5"
+           "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/5"
           },
           {
            "team_logos": [
             {
              "team_logo": {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/35348986614_d987d7.jpg"
+              "url": "https://example.com/img.jpg"
              }
             }
            ]
@@ -525,7 +525,7 @@
           {
            "has_draft_grade": 1,
            "draft_grade": "B-",
-           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/5/draftrecap"
+           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/5/draftrecap"
           },
           [],
           [],
@@ -577,7 +577,7 @@
         "team": [
          [
           {
-           "team_key": "461.l.116514.t.1"
+           "team_key": "461.l.123456.t.1"
           },
           {
            "team_id": "1"
@@ -587,14 +587,14 @@
           },
           [],
           {
-           "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/1"
+           "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/1"
           },
           {
            "team_logos": [
             {
              "team_logo": {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/38126597330_43abf0.jpg"
+              "url": "https://example.com/img.jpg"
              }
             }
            ]
@@ -629,7 +629,7 @@
           {
            "has_draft_grade": 1,
            "draft_grade": "D+",
-           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/1/draftrecap"
+           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/1/draftrecap"
           },
           [],
           [],
@@ -681,7 +681,7 @@
         "team": [
          [
           {
-           "team_key": "461.l.116514.t.4"
+           "team_key": "461.l.123456.t.4"
           },
           {
            "team_id": "4"
@@ -691,7 +691,7 @@
           },
           [],
           {
-           "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/4"
+           "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/4"
           },
           {
            "team_logos": [
@@ -733,7 +733,7 @@
           {
            "has_draft_grade": 1,
            "draft_grade": "D+",
-           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/4/draftrecap"
+           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/4/draftrecap"
           },
           [],
           [],
@@ -785,7 +785,7 @@
         "team": [
          [
           {
-           "team_key": "461.l.116514.t.8"
+           "team_key": "461.l.123456.t.8"
           },
           {
            "team_id": "8"
@@ -795,7 +795,7 @@
           },
           [],
           {
-           "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/8"
+           "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/8"
           },
           {
            "team_logos": [
@@ -837,7 +837,7 @@
           {
            "has_draft_grade": 1,
            "draft_grade": "A+",
-           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/8/draftrecap"
+           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/8/draftrecap"
           },
           [],
           [],
@@ -889,7 +889,7 @@
         "team": [
          [
           {
-           "team_key": "461.l.116514.t.6"
+           "team_key": "461.l.123456.t.6"
           },
           {
            "team_id": "6"
@@ -899,7 +899,7 @@
           },
           [],
           {
-           "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/6"
+           "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/6"
           },
           {
            "team_logos": [
@@ -941,7 +941,7 @@
           {
            "has_draft_grade": 1,
            "draft_grade": "D-",
-           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/6/draftrecap"
+           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/6/draftrecap"
           },
           [],
           [],
@@ -992,7 +992,7 @@
         "team": [
          [
           {
-           "team_key": "461.l.116514.t.2"
+           "team_key": "461.l.123456.t.2"
           },
           {
            "team_id": "2"
@@ -1002,7 +1002,7 @@
           },
           [],
           {
-           "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/2"
+           "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/2"
           },
           {
            "team_logos": [
@@ -1044,7 +1044,7 @@
           {
            "has_draft_grade": 1,
            "draft_grade": "B-",
-           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/2/draftrecap"
+           "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/2/draftrecap"
           },
           [],
           [],
@@ -1102,7 +1102,7 @@
       "team": [
        [
         {
-         "team_key": "461.l.116514.t.1"
+         "team_key": "461.l.123456.t.1"
         },
         {
          "team_id": "1"
@@ -1112,14 +1112,14 @@
         },
         [],
         {
-         "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/1"
+         "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/1"
         },
         {
          "team_logos": [
           {
            "team_logo": {
             "size": "large",
-            "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/38126597330_43abf0.jpg"
+            "url": "https://example.com/img.jpg"
            }
           }
          ]
@@ -1154,7 +1154,7 @@
         {
          "has_draft_grade": 1,
          "draft_grade": "D+",
-         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/1/draftrecap"
+         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/1/draftrecap"
         },
         [],
         [],
@@ -1181,7 +1181,7 @@
       "team": [
        [
         {
-         "team_key": "461.l.116514.t.2"
+         "team_key": "461.l.123456.t.2"
         },
         {
          "team_id": "2"
@@ -1191,7 +1191,7 @@
         },
         [],
         {
-         "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/2"
+         "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/2"
         },
         {
          "team_logos": [
@@ -1233,7 +1233,7 @@
         {
          "has_draft_grade": 1,
          "draft_grade": "B-",
-         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/2/draftrecap"
+         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/2/draftrecap"
         },
         [],
         [],
@@ -1260,7 +1260,7 @@
       "team": [
        [
         {
-         "team_key": "461.l.116514.t.3"
+         "team_key": "461.l.123456.t.3"
         },
         {
          "team_id": "3"
@@ -1270,7 +1270,7 @@
         },
         [],
         {
-         "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/3"
+         "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/3"
         },
         {
          "team_logos": [
@@ -1314,7 +1314,7 @@
         {
          "has_draft_grade": 1,
          "draft_grade": "A+",
-         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/3/draftrecap"
+         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/3/draftrecap"
         },
         [],
         [],
@@ -1341,7 +1341,7 @@
       "team": [
        [
         {
-         "team_key": "461.l.116514.t.4"
+         "team_key": "461.l.123456.t.4"
         },
         {
          "team_id": "4"
@@ -1351,7 +1351,7 @@
         },
         [],
         {
-         "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/4"
+         "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/4"
         },
         {
          "team_logos": [
@@ -1393,7 +1393,7 @@
         {
          "has_draft_grade": 1,
          "draft_grade": "D+",
-         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/4/draftrecap"
+         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/4/draftrecap"
         },
         [],
         [],
@@ -1420,7 +1420,7 @@
       "team": [
        [
         {
-         "team_key": "461.l.116514.t.5"
+         "team_key": "461.l.123456.t.5"
         },
         {
          "team_id": "5"
@@ -1430,14 +1430,14 @@
         },
         [],
         {
-         "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/5"
+         "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/5"
         },
         {
          "team_logos": [
           {
            "team_logo": {
             "size": "large",
-            "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/35348986614_d987d7.jpg"
+            "url": "https://example.com/img.jpg"
            }
           }
          ]
@@ -1472,7 +1472,7 @@
         {
          "has_draft_grade": 1,
          "draft_grade": "B-",
-         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/5/draftrecap"
+         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/5/draftrecap"
         },
         [],
         [],
@@ -1499,7 +1499,7 @@
       "team": [
        [
         {
-         "team_key": "461.l.116514.t.6"
+         "team_key": "461.l.123456.t.6"
         },
         {
          "team_id": "6"
@@ -1509,7 +1509,7 @@
         },
         [],
         {
-         "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/6"
+         "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/6"
         },
         {
          "team_logos": [
@@ -1551,7 +1551,7 @@
         {
          "has_draft_grade": 1,
          "draft_grade": "D-",
-         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/6/draftrecap"
+         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/6/draftrecap"
         },
         [],
         [],
@@ -1578,7 +1578,7 @@
       "team": [
        [
         {
-         "team_key": "461.l.116514.t.7"
+         "team_key": "461.l.123456.t.7"
         },
         {
          "team_id": "7"
@@ -1588,7 +1588,7 @@
         },
         [],
         {
-         "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/7"
+         "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/7"
         },
         {
          "team_logos": [
@@ -1632,7 +1632,7 @@
         {
          "has_draft_grade": 1,
          "draft_grade": "C-",
-         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/7/draftrecap"
+         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/7/draftrecap"
         },
         [],
         [],
@@ -1659,7 +1659,7 @@
       "team": [
        [
         {
-         "team_key": "461.l.116514.t.8"
+         "team_key": "461.l.123456.t.8"
         },
         {
          "team_id": "8"
@@ -1669,7 +1669,7 @@
         },
         [],
         {
-         "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/8"
+         "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/8"
         },
         {
          "team_logos": [
@@ -1711,7 +1711,7 @@
         {
          "has_draft_grade": 1,
          "draft_grade": "A+",
-         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/8/draftrecap"
+         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/8/draftrecap"
         },
         [],
         [],
@@ -1738,7 +1738,7 @@
       "team": [
        [
         {
-         "team_key": "461.l.116514.t.9"
+         "team_key": "461.l.123456.t.9"
         },
         {
          "team_id": "9"
@@ -1748,7 +1748,7 @@
         },
         [],
         {
-         "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/9"
+         "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/9"
         },
         {
          "team_logos": [
@@ -1792,7 +1792,7 @@
         {
          "has_draft_grade": 1,
          "draft_grade": "A",
-         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/9/draftrecap"
+         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/9/draftrecap"
         },
         [],
         [],
@@ -1819,7 +1819,7 @@
       "team": [
        [
         {
-         "team_key": "461.l.116514.t.10"
+         "team_key": "461.l.123456.t.10"
         },
         {
          "team_id": "10"
@@ -1829,7 +1829,7 @@
         },
         [],
         {
-         "url": "https://football.fantasysports.yahoo.com/2025/f1/116514/10"
+         "url": "https://football.fantasysports.yahoo.com/2025/f1/123456/10"
         },
         {
          "team_logos": [
@@ -1873,7 +1873,7 @@
         {
          "has_draft_grade": 1,
          "draft_grade": "D",
-         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/116514/10/draftrecap"
+         "draft_recap_url": "https://football.fantasysports.yahoo.com/2025/f1/123456/10/draftrecap"
         },
         [],
         [],

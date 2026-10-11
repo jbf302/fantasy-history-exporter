@@ -41,13 +41,13 @@ import {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixture = JSON.parse(
-  readFileSync(join(__dirname, "fixtures", "yahoo-league-461.l.116514.json"), "utf8")
+  readFileSync(join(__dirname, "fixtures", "yahoo-league-461.l.123456.json"), "utf8")
 );
 const scoreboardFixture = JSON.parse(
-  readFileSync(join(__dirname, "fixtures", "yahoo-scoreboard-461.l.116514-week1.json"), "utf8")
+  readFileSync(join(__dirname, "fixtures", "yahoo-scoreboard-461.l.123456-week1.json"), "utf8")
 );
 const rosterFixture = JSON.parse(
-  readFileSync(join(__dirname, "fixtures", "yahoo-roster-461.l.116514-t9-week1.json"), "utf8")
+  readFileSync(join(__dirname, "fixtures", "yahoo-roster-461.l.123456-t9-week1.json"), "utf8")
 );
 
 test("yahooSeasonFromUrl reads slug-based historical league URLs", () => {
@@ -70,7 +70,7 @@ test("yahooLeagueSlugFromUrl reads SFPL-style franchise paths", () => {
     "sfpl"
   );
   assert.equal(
-    yahooLeagueSlugFromUrl("https://football.fantasysports.yahoo.com/2025/f1/116514"),
+    yahooLeagueSlugFromUrl("https://football.fantasysports.yahoo.com/2025/f1/123456"),
     null
   );
 });
@@ -120,14 +120,14 @@ test("historicalSeasonYearsFromYahooHtml collects season years from Yahoo league
 
 test("yahooLeagueIdFromUrl parses modern Yahoo football league URLs", () => {
   assert.equal(
-    yahooLeagueIdFromUrl("https://football.fantasysports.yahoo.com/f1/116514"),
-    "116514"
+    yahooLeagueIdFromUrl("https://football.fantasysports.yahoo.com/f1/123456"),
+    "123456"
   );
   assert.equal(
-    yahooLeagueIdFromUrl("https://football.fantasysports.yahoo.com/2025/f1/116514/9"),
-    "116514"
+    yahooLeagueIdFromUrl("https://football.fantasysports.yahoo.com/2025/f1/123456/9"),
+    "123456"
   );
-  assert.equal(yahooSeasonFromUrl("https://football.fantasysports.yahoo.com/2025/f1/116514"), "2025");
+  assert.equal(yahooSeasonFromUrl("https://football.fantasysports.yahoo.com/2025/f1/123456"), "2025");
 });
 
 test("rewriteYahooUrlBase swaps Yahoo fantasy API hosts", () => {
@@ -139,19 +139,19 @@ test("rewriteYahooUrlBase swaps Yahoo fantasy API hosts", () => {
 });
 
 test("leagueKeyFromHtml finds a league key embedded in page HTML", () => {
-  const html = '<script>"league_key":"461.l.116514"</script>';
-  assert.equal(leagueKeyFromHtml(html, "116514"), "461.l.116514");
+  const html = '<script>"league_key":"461.l.123456"</script>';
+  assert.equal(leagueKeyFromHtml(html, "123456"), "461.l.123456");
 });
 
 test("leagueKeyFromRenew converts Yahoo renew tokens", () => {
-  assert.equal(leagueKeyFromRenew("449_116514"), "449.l.116514");
-  assert.equal(leagueKeyFromRenew("449.l.116514"), "449.l.116514");
+  assert.equal(leagueKeyFromRenew("449_123456"), "449.l.123456");
+  assert.equal(leagueKeyFromRenew("449.l.123456"), "449.l.123456");
   assert.equal(leagueKeyFromRenew(""), null);
 });
 
 test("parseLeagueSeasonBundle reads metadata and standings teams", () => {
   const bundle = parseLeagueSeasonBundle(fixture);
-  assert.equal(bundle.metadata.league_id, "116514");
+  assert.equal(bundle.metadata.league_id, "123456");
   assert.equal(bundle.metadata.season, "2025");
   assert.ok(bundle.standingsTeams.length >= 2);
   assert.ok(bundle.standingsTeams[0].name);
@@ -160,15 +160,15 @@ test("parseLeagueSeasonBundle reads metadata and standings teams", () => {
 
 test("parseLeagueMetadata reads league header", () => {
   const metadata = parseLeagueMetadata(fixture);
-  assert.equal(metadata.league_key, "461.l.116514");
-  assert.equal(metadata.name, "Yahoo H2H-Pts 116514");
+  assert.equal(metadata.league_key, "461.l.123456");
+  assert.equal(metadata.name, "Yahoo H2H-Pts 123456");
 });
 
 test("leagueIdFromLeagueKey and leagueKeyMatchesLeagueId", () => {
-  assert.equal(leagueIdFromLeagueKey("461.l.116514"), "116514");
+  assert.equal(leagueIdFromLeagueKey("461.l.123456"), "123456");
   assert.equal(leagueIdFromLeagueKey("348.l.495133"), "495133");
-  assert.equal(leagueKeyMatchesLeagueId("461.l.116514", "116514"), true);
-  assert.equal(leagueKeyMatchesLeagueId("348.l.495133", "116514"), false);
+  assert.equal(leagueKeyMatchesLeagueId("461.l.123456", "123456"), true);
+  assert.equal(leagueKeyMatchesLeagueId("348.l.495133", "123456"), false);
 });
 
 test("yahooTransientServerError detects retryable Yahoo API failures", () => {
@@ -295,20 +295,20 @@ test("discoverYahooLeagueChain stops when renew points at a different league id"
   const calls = [];
   const fetchJson = async (url) => {
     calls.push(url);
-    if (url.includes("461.l.116514")) {
+    if (url.includes("461.l.123456")) {
       return {
         fantasy_content: {
           league: [
-            [{ league_key: "461.l.116514", league_id: "116514", season: "2025", renew: "449_116514" }]
+            [{ league_key: "461.l.123456", league_id: "123456", season: "2025", renew: "449_123456" }]
           ]
         }
       };
     }
-    if (url.includes("449.l.116514")) {
+    if (url.includes("449.l.123456")) {
       return {
         fantasy_content: {
           league: [
-            [{ league_key: "449.l.116514", league_id: "116514", season: "2024", renew: "348_495133" }]
+            [{ league_key: "449.l.123456", league_id: "123456", season: "2024", renew: "348_495133" }]
           ]
         }
       };
@@ -317,8 +317,8 @@ test("discoverYahooLeagueChain stops when renew points at a different league id"
   };
 
   const chain = await discoverYahooLeagueChain({
-    startLeagueKey: "461.l.116514",
-    anchorLeagueId: "116514",
+    startLeagueKey: "461.l.123456",
+    anchorLeagueId: "123456",
     fetchJson
   });
 
@@ -341,13 +341,13 @@ test("findAllLeagueKeysInUserGames returns every NFL season key for a league id"
               0: {
                 game: [
                   [{ season: "2025" }],
-                  { leagues: { 0: { league: [{ league_key: "461.l.116514", league_id: "116514", season: "2025" }] } } }
+                  { leagues: { 0: { league: [{ league_key: "461.l.123456", league_id: "123456", season: "2025" }] } } }
                 ]
               },
               1: {
                 game: [
                   [{ season: "2024" }],
-                  { leagues: { 0: { league: [{ league_key: "449.l.116514", league_id: "116514", season: "2024" }] } } }
+                  { leagues: { 0: { league: [{ league_key: "449.l.123456", league_id: "123456", season: "2024" }] } } }
                 ]
               }
             }
@@ -357,7 +357,7 @@ test("findAllLeagueKeysInUserGames returns every NFL season key for a league id"
     }
   };
 
-  const matches = findAllLeagueKeysInUserGames(payload, "116514");
+  const matches = findAllLeagueKeysInUserGames(payload, "123456");
   assert.deepEqual(
     matches.map((match) => match.season),
     ["2025", "2024"]
@@ -366,26 +366,26 @@ test("findAllLeagueKeysInUserGames returns every NFL season key for a league id"
 
 test("discoverYahooLeagueChain backfills prior seasons by NFL game key when renew is poisoned", async () => {
   const fetchJson = async (url) => {
-    if (url.includes("470.l.116514")) {
+    if (url.includes("470.l.123456")) {
       return {
         fantasy_content: {
           league: [
-            [{ league_key: "470.l.116514", league_id: "116514", season: "2026", renew: "348_495133" }]
+            [{ league_key: "470.l.123456", league_id: "123456", season: "2026", renew: "348_495133" }]
           ]
         }
       };
     }
-    if (url.includes("461.l.116514")) {
+    if (url.includes("461.l.123456")) {
       return {
         fantasy_content: {
-          league: [[{ league_key: "461.l.116514", league_id: "116514", season: "2025", renew: "449_116514" }]]
+          league: [[{ league_key: "461.l.123456", league_id: "123456", season: "2025", renew: "449_123456" }]]
         }
       };
     }
-    if (url.includes("449.l.116514")) {
+    if (url.includes("449.l.123456")) {
       return {
         fantasy_content: {
-          league: [[{ league_key: "449.l.116514", league_id: "116514", season: "2024", renew: "423_116514" }]]
+          league: [[{ league_key: "449.l.123456", league_id: "123456", season: "2024", renew: "423_123456" }]]
         }
       };
     }
@@ -393,8 +393,8 @@ test("discoverYahooLeagueChain backfills prior seasons by NFL game key when rene
   };
 
   const chain = await discoverYahooLeagueChain({
-    startLeagueKey: "470.l.116514",
-    anchorLeagueId: "116514",
+    startLeagueKey: "470.l.123456",
+    anchorLeagueId: "123456",
     hintSeason: "2026",
     fetchJson
   });
@@ -406,9 +406,9 @@ test("discoverYahooLeagueChain backfills prior seasons by NFL game key when rene
 });
 
 test("scoreboard and roster URL builders include week parameters", () => {
-  assert.match(leagueScoreboardUrl("461.l.116514", 1), /scoreboard;week=1/);
-  assert.match(teamRosterWeekUrl("461.l.116514.t.9", 1), /roster;week=1/);
-  assert.match(teamRosterWeekStatsUrl("461.l.116514.t.9", 1), /players\/stats;type=week;week=1/);
+  assert.match(leagueScoreboardUrl("461.l.123456", 1), /scoreboard;week=1/);
+  assert.match(teamRosterWeekUrl("461.l.123456.t.9", 1), /roster;week=1/);
+  assert.match(teamRosterWeekStatsUrl("461.l.123456.t.9", 1), /players\/stats;type=week;week=1/);
 });
 
 test("weekNumbersFromLeagueMetadata respects finished vs in-progress seasons", () => {
@@ -449,10 +449,10 @@ test("parseLeagueScoreboard and parseTeamRosterWeek read weekly matchup and line
 
 test("parseLeagueDraftResults and parseLeagueDraftSettings read auction draft payloads", () => {
   const draftFixture = JSON.parse(
-    readFileSync(join(__dirname, "fixtures", "yahoo-draft-461.l.116514.json"), "utf8")
+    readFileSync(join(__dirname, "fixtures", "yahoo-draft-461.l.123456.json"), "utf8")
   );
   const settingsFixture = JSON.parse(
-    readFileSync(join(__dirname, "fixtures", "yahoo-settings-auction-461.l.116514.json"), "utf8")
+    readFileSync(join(__dirname, "fixtures", "yahoo-settings-auction-461.l.123456.json"), "utf8")
   );
 
   const draft = parseLeagueDraftResults(draftFixture);
@@ -467,21 +467,21 @@ test("parseLeagueDraftResults and parseLeagueDraftSettings read auction draft pa
 
 test("discoverYahooLeagueChain ignores transient Yahoo errors while probing older seasons", async () => {
   const fetchJson = async (url) => {
-    if (url.includes("470.l.116514")) {
+    if (url.includes("470.l.123456")) {
       return {
         fantasy_content: {
-          league: [[{ league_key: "470.l.116514", league_id: "116514", season: "2026", renew: "348_495133" }]]
+          league: [[{ league_key: "470.l.123456", league_id: "123456", season: "2026", renew: "348_495133" }]]
         }
       };
     }
-    if (url.includes("461.l.116514")) {
+    if (url.includes("461.l.123456")) {
       return {
         fantasy_content: {
-          league: [[{ league_key: "461.l.116514", league_id: "116514", season: "2025", renew: "449_116514" }]]
+          league: [[{ league_key: "461.l.123456", league_id: "123456", season: "2025", renew: "449_123456" }]]
         }
       };
     }
-    if (url.includes("449.l.116514")) {
+    if (url.includes("449.l.123456")) {
       throw new YahooApiError(
         "There was a temporary problem with the server. Please try again shortly.",
         400,
@@ -492,8 +492,8 @@ test("discoverYahooLeagueChain ignores transient Yahoo errors while probing olde
   };
 
   const chain = await discoverYahooLeagueChain({
-    startLeagueKey: "470.l.116514",
-    anchorLeagueId: "116514",
+    startLeagueKey: "470.l.123456",
+    anchorLeagueId: "123456",
     hintSeason: "2026",
     fetchJson
   });

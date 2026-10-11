@@ -2,7 +2,7 @@
 
 A Chrome extension that downloads your **Yahoo Fantasy Football** league's entire history as a single JSON file: every season's standings, draft (including auction prices), weekly matchups, and the starting lineups and bench for every team, every week.
 
-Yahoo makes this data hard to get out. With this you can build league record books, rivalry pages, "did I start the right guy?" analysis, or sites like [Fantasy Cooperstown](https://github.com/jbf302/fantasy-cooperstown).
+Yahoo makes this data hard to get out. With this you can build league record books, rivalry pages, "did I start the right guy?" analysis, or sites like [Fantasy Cooperstown](https://fantasy-cooperstown.vercel.app/).
 
 > **Unofficial.** Not made by, affiliated with, or endorsed by Yahoo. It reads data from your own account the same way the Yahoo website does.
 
@@ -12,6 +12,8 @@ Yahoo makes this data hard to get out. With this you can build league record boo
 2. In Chrome, open `chrome://extensions` and switch on **Developer mode** (top right).
 3. Click **Load unpacked** and choose the unzipped folder (the one containing `manifest.json`).
 
+Chrome may show a "disable developer mode extensions" reminder on startup; that's expected for unpacked extensions.
+
 Works in Chrome and other Chromium browsers (Edge, Brave, Arc) version 116 or newer.
 
 ## Use
@@ -19,7 +21,7 @@ Works in Chrome and other Chromium browsers (Edge, Brave, Arc) version 116 or ne
 1. Sign in to Yahoo and open your league at `football.fantasysports.yahoo.com`.
 2. Click the extension's icon. A side panel opens.
 3. Click **Find seasons**, pick the seasons you want, and click **Download selected seasons**.
-4. Wait. A league with many seasons makes a lot of requests (weekly scoreboards plus every team's lineup for every week) and can take several minutes. Keep the Yahoo tab open.
+4. Wait. A league with many seasons makes a lot of requests (weekly scoreboards plus every team's lineup for every week) and can take several minutes. Keep a `football.fantasysports.yahoo.com` tab open and signed in.
 5. A `…-yahoo-history.json` file is saved to your downloads. Use **Save JSON file** to save it again.
 
 Requests are deliberately paced (a few per second) because Yahoo blocks browsers that send bursts. If Yahoo returns a temporary error the extension backs off and retries. If it blocks you outright (error 999), it stops, keeps the seasons it already fetched so you can save a partial file, and asks you to wait 30–60 minutes. Click **Download** again afterwards to pick up where it left off. Scanning repeatedly in a short time makes blocks more likely.
@@ -37,9 +39,9 @@ Everything runs in your browser. The file goes to your computer and nowhere else
 ## Limitations
 
 - NFL fantasy football only.
-- Yahoo only exposes history for leagues you belong to, and typically back to about 2014.
+- Yahoo only exposes history for leagues you belong to, and typically back to about 2014 (earlier seasons aren't attempted).
 - League scoring *rules* aren't exported, only the scores.
-- Yahoo can change its site at any time; if something breaks, please open an issue.
+- Yahoo can change its site at any time; if something breaks, please [open an issue](../../issues).
 
 ## Development
 
