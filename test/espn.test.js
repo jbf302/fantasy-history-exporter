@@ -77,6 +77,15 @@ test("discoverEspnSeasons reports a private league", async () => {
   await assert.rejects(discoverEspnSeasons({ leagueId: LEAGUE_ID, fetchJson }), (error) => error.status === 401);
 });
 
+test("older private seasons that 401 on /seasons fall back to leagueHistory", async () => {
+  const fetchJson = async (url) => {
+    if (url.includes("/seasons/2019/")) throw new EspnApiError("You are not authorized to view this League.", 401, url);
+    return [{ ...fixture.core, seasonId: 2019 }];
+  };
+  const season = await fetchEspnSeason({ leagueId: LEAGUE_ID, season: "2019" }, fetchJson);
+  assert.equal(season.core.seasonId, 2019);
+});
+
 test("createEspnFetcher refuses non-ESPN URLs", async () => {
   const fetchJson = createEspnFetcher({ fetchImpl: async () => assert.fail("should not fetch") });
   await assert.rejects(fetchJson("https://example.com/apis/v3/games/ffl/x"), /not allowed/);
